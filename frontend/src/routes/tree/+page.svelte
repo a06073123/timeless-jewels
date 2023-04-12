@@ -1,16 +1,16 @@
 <script lang="ts">
-  import SkillTree from '../lib/components/SkillTree.svelte';
+  import SkillTree from '../../lib/components/SkillTree.svelte';
   import Select from 'svelte-select';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import type { Node } from '../lib/skill_tree_types';
-  import { getAffectedNodes, skillTree, translateStat, openTrade } from '../lib/skill_tree';
-  import { syncWrap } from '../lib/worker';
+  import type { Node } from '../../lib/skill_tree_types';
+  import { getAffectedNodes, skillTree, translateStat, openTrade } from '../../lib/skill_tree';
+  import { syncWrap } from '../../lib/worker';
   import { proxy } from 'comlink';
-  import type { ReverseSearchConfig, StatConfig } from '../lib/skill_tree';
-  import SearchResults from '../lib/components/SearchResults.svelte';
-  import { statValues } from '../lib/values';
-  import { data, calculator } from '../lib/types';
+  import type { ReverseSearchConfig, StatConfig } from '../../lib/skill_tree';
+  import SearchResults from '../../lib/components/SearchResults.svelte';
+  import { statValues } from '../../lib/values';
+  import { data, calculator } from '../../lib/types';
 
   const searchParams = $page.url.searchParams;
 
@@ -51,15 +51,17 @@
     !selectedConqueror ||
     Object.keys(data.TimelessJewelConquerors[selectedJewel.value]).indexOf(selectedConqueror.value) < 0
       ? []
-      : affectedNodes.map((n) => ({
-          node: n.skill,
-          result: calculator.Calculate(
-            data.TreeToPassive[n.skill].Index,
-            seed,
-            selectedJewel.value,
-            selectedConqueror.value
-          )
-        }));
+      : affectedNodes
+          .filter((n) => !!data.TreeToPassive[n.skill])
+          .map((n) => ({
+            node: n.skill,
+            result: calculator.Calculate(
+              data.TreeToPassive[n.skill].Index,
+              seed,
+              selectedJewel.value,
+              selectedConqueror.value
+            )
+          }));
 
   let selectedStats: Record<number, StatConfig> = {};
   if (searchParams.has('stat')) {
@@ -168,7 +170,11 @@
     const query: ReverseSearchConfig = {
       jewel: selectedJewel.value,
       conqueror: selectedConqueror.value,
-      nodes: affectedNodes.filter((n) => !disabled.has(n.skill)).map((n) => data.TreeToPassive[n.skill].Index),
+      nodes: affectedNodes
+        .filter((n) => !disabled.has(n.skill))
+        .map((n) => data.TreeToPassive[n.skill])
+        .filter((n) => !!n)
+        .map((n) => n.Index),
       stats: Object.keys(selectedStats).map((stat) => selectedStats[stat]),
       minTotalWeight
     };
@@ -469,12 +475,12 @@
         </div>
 
         {#if !results}
-          <Select items={jewels} bind:value={selectedJewel} on:select={changeJewel} />
+          <Select items={jewels} bind:value={selectedJewel} on:change={changeJewel} />
 
           {#if selectedJewel}
             <div class="mt-4">
               <h3 class="mb-2">Conqueror</h3>
-              <Select items={conquerors} bind:value={selectedConqueror} on:select={updateUrl} />
+              <Select items={conquerors} bind:value={selectedConqueror} on:change={updateUrl} />
             </div>
 
             {#if selectedConqueror && Object.keys(data.TimelessJewelConquerors[selectedJewel.value]).indexOf(selectedConqueror.value) >= 0}
@@ -567,7 +573,7 @@
               {:else if mode === 'stats'}
                 <div class="mt-4">
                   <h3 class="mb-2">Add Stat</h3>
-                  <Select items={statItems} on:select={selectStat} bind:this={statSelector} />
+                  <Select items={statItems} on:change={selectStat} bind:this={statSelector} />
                 </div>
                 {#if Object.keys(selectedStats).length > 0}
                   <div class="mt-4 flex flex-col overflow-auto min-h-[100px]">
