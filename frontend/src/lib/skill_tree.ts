@@ -213,8 +213,8 @@ export const distance = (p1: Point, p2: Point): number =>
 export const formatStats = (translation: Translation, stat: number): string | undefined => {
   let selectedTranslation = -1;
 
-  for (let i = 0; i < translation.English.length; i++) {
-    const t = translation.English[i];
+  for (let i = 0; i < translation.Traditional_Chinese.length; i++) {
+    const t = translation.Traditional_Chinese[i];
 
     let matches = true;
     if (t.condition.length > 0) {
@@ -246,7 +246,7 @@ export const formatStats = (translation: Translation, stat: number): string | un
     return undefined;
   }
 
-  const datum = translation.English[selectedTranslation];
+  const datum = translation.Traditional_Chinese[selectedTranslation];
 
   let finalStat = stat;
 
@@ -324,9 +324,9 @@ export const translateStat = (id: number, roll?: number | undefined): string => 
   }
 
   let translationText = stat.Text || stat.ID;
-  if (translation && translation.English && translation.English.length) {
-    translationText = translation.English[0].string;
-    translation.English[0].format.forEach((f, i) => {
+  if (translation && translation.Traditional_Chinese && translation.Traditional_Chinese.length) {
+    translationText = translation.Traditional_Chinese[0].string;
+    translation.Traditional_Chinese[0].format.forEach((f, i) => {
       translationText = translationText.replace(`{${i}}`, f);
     });
   }
@@ -395,6 +395,9 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
               value: {
                 min: seed,
                 max: seed
+              },
+              sale_type: {
+                option: 'any'
               }
             }))
           )

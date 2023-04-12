@@ -161,7 +161,7 @@ export interface TranslationData {
 }
 
 export interface Translation {
-  English: TranslationData[];
+  Traditional_Chinese: TranslationData[];
   ids: string[];
   hidden?: boolean;
 }
