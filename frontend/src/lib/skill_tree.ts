@@ -1,6 +1,6 @@
-import type { Translation, Node, SkillTreeData, Group, Sprite } from './skill_tree_types';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
+import type { Group, Node, SkillTreeData, Sprite, Translation } from './skill_tree_types';
 import { data } from './types';
 
 export let skillTree: SkillTreeData;
@@ -429,10 +429,10 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
   return {
     query: {
       status: {
-        option: 'online'
+        option: 'any'
       },
       name: data.TimelessJewels[jewel],
-      type: 'Timeless Jewel',
+      type: '永恆珠寶',
       stats
     },
     sort: {
@@ -442,7 +442,9 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
 };
 
 export const openTrade = (jewel: number, conqueror: string, results: SearchWithSeed[]) => {
-  const url = new URL('https://www.pathofexile.com/trade/search/Sentinel');
-  url.searchParams.set('q', JSON.stringify(constructQuery(jewel, conqueror, results)));
+  const json = JSON.stringify(constructQuery(jewel, conqueror, results));
+  const url = new URL('https://web.poe.garena.tw/trade/search/%E7%86%94%E7%81%AB%E5%86%A5%E7%8D%84');
+  console.log('openTrade', json);
+  url.searchParams.set('q', json);
   window.open(url, '_blank');
 };
