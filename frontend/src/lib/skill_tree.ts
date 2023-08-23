@@ -1,4 +1,4 @@
-import type { Group, Node, SkillTreeData, Sprite, Translation } from './skill_tree_types';
+import type { Group, Node, SkillTreeData, Sprite, Translation, TranslationFile } from './skill_tree_types';
 import { data } from './types';
 
 export let skillTree: SkillTreeData;
@@ -87,15 +87,25 @@ export const loadSkillTree = () => {
     (c) => (inverseSprites[c] = skillTree.sprites.frame['0.3835'])
   );
 
-  const translations: Translation[] = JSON.parse(data.PassiveTranslations);
+  const translationFiles = [
+    data.StatTranslationsJSON,
+    data.PassiveSkillStatTranslationsJSON,
+    data.PassiveSkillAuraStatTranslationsJSON
+  ];
 
-  translations.forEach((t) => {
-    t.ids.forEach((id) => {
-      inverseTranslations[id] = t;
+  translationFiles.forEach((f) => {
+    const translations: TranslationFile = JSON.parse(f);
+
+    translations.descriptors.forEach((t) => {
+      t.ids.forEach((id) => {
+        if (!(id in inverseTranslations)) {
+          inverseTranslations[id] = t;
+        }
+      });
     });
   });
 
-  Object.keys(data.TreeToPassive).forEach((k) => {
+  Object.keys(data?.TreeToPassive).forEach((k) => {
     passiveToTree[data.TreeToPassive[parseInt(k)].Index] = parseInt(k);
   });
 };
@@ -440,7 +450,7 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
 
 export const openTrade = (jewel: number, conqueror: string, results: SearchWithSeed[]) => {
   const json = JSON.stringify(constructQuery(jewel, conqueror, results));
-  const url = new URL('https://web.poe.garena.tw/trade/search/%E7%86%94%E7%81%AB%E5%86%A5%E7%8D%84');
+  const url = new URL('https://web.poe.garena.tw/trade/search/%E7%A5%96%E9%9D%88%E7%9A%84%E8%A9%A6%E7%85%89');
   console.log('openTrade', json);
   url.searchParams.set('q', json);
   window.open(url, '_blank');
