@@ -471,7 +471,7 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
 
 export const openTrade = (jewel: number, conqueror: string, results: SearchWithSeed[]) => {
   const json = JSON.stringify(constructQuery(jewel, conqueror, results));
-  const url = new URL('https://web.poe.garena.tw/trade/search/%E7%A6%81%E5%92%92%E8%8D%92%E6%9E%97');
+  const url = new URL('https://web.poe.garena.tw/trade/search');
   console.log('openTrade', json);
   url.searchParams.set('q', json);
   window.open(url, '_blank');
