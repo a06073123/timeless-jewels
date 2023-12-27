@@ -105,7 +105,7 @@ export const loadSkillTree = () => {
     });
   });
 
-  Object.keys(data?.TreeToPassive).forEach((k) => {
+  Object.keys(data.TreeToPassive).forEach((k) => {
     passiveToTree[data.TreeToPassive[parseInt(k)].Index] = parseInt(k);
   });
 };
@@ -459,8 +459,6 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
       status: {
         option: 'any'
       },
-      name: data.TimelessJewels[jewel],
-      type: '永恆珠寶',
       stats: final_query
     },
     sort: {
