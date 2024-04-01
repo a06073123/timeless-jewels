@@ -459,7 +459,7 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
       status: {
         option: 'any'
       },
-      stats: final_query
+      stats: Array.from(new Set(final_query))
     },
     sort: {
       price: 'asc'
@@ -469,7 +469,7 @@ export const constructQuery = (jewel: number, conqueror: string, result: SearchW
 
 export const openTrade = (jewel: number, conqueror: string, results: SearchWithSeed[]) => {
   const json = JSON.stringify(constructQuery(jewel, conqueror, results));
-  const url = new URL('https://web.poe.garena.tw/trade/search');
+  const url = new URL('https://pathofexile.tw/trade/search');
   console.log('openTrade', json);
   url.searchParams.set('q', json);
   window.open(url, '_blank');
